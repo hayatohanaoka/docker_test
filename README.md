@@ -1,5 +1,5 @@
 # 概要
-- Dockerでの環境構築の第一歩としての練習リポジトリ
+- Docker環境構築の第一歩としての練習リポジトリ
     - WSL2 × windows を想定
 ### 参考にした記事
 1. [WSLのインストール](https://learn.microsoft.com/ja-jp/windows/wsl/install)
