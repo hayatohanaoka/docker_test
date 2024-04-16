@@ -1,9 +1,8 @@
-version: '4'
 services:
-  python3:
+  pytho3:
+    env_file: .env
     restart: always
     build: .
-    container_name: 'python3'
     working_dir: '/root/'
     tty: true
     volumes:

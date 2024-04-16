@@ -1,12 +1,20 @@
+# 目次
+- [概要](#概要)
+    - [参考記事](#参考記事)
+    - [使用したコマンド](#使用したコマンド)
+    - [ヘルプの出力内容](#ヘルプの出力内容)
+- [各種ファイルの中身](#各種ファイルの中身)
+
 # 概要
 - Dockerでの環境構築の第一歩としての練習リポジトリ
     - WSL2 × windows を想定
-### 参考にした記事
+
+### 参考記事
 1. [WSLのインストール](https://learn.microsoft.com/ja-jp/windows/wsl/install)
 2. [Dockerの環境構築](https://zenn.dev/ttani/articles/wsl2-docker-setup)
 3. [Docker×Python環境構築](https://zenn.dev/agdm/articles/0f82ea448e38b8)
 
-# 使用したコマンド
+### 使用したコマンド
 1. `docker -v`
     - 動作確認に使用
 2. `docker --help > help.txt`
@@ -15,14 +23,18 @@
     - image の一覧情報の出力に使用
 4. `docker container ls`
     -  container の一覧情報の出力に使用
-5. `docker compose up -d --build`
-    - Dockerfileからイメージをビルドする際に使用
-6. `docker container start my_container_name`
+5. **`docker-compose up -d --build`**
+    - `Dockerfile` から `images` をビルドし、`Docker-compose.yml` に従って `containers` を2つ以上起動する際に使用
+6. `docker container start [YOUR CONTAINER NAME]`
     - コンテナの起動に使用
-7. `docker container stop my_container_name`
+7. **`docker container exec -it [YOUR CONTAINER NAME] bash`**
+    - コンテナにbashで接続
+8. `docker container stop [YOUR CONTAINER NAME]`
     - コンテナの停止に使用
+9. `docker-compose down`
+    - コンテナを停止して削除する際に使用
 
-# ヘルプの出力内容（困ったら見てみる）
+### ヘルプの出力内容（困ったら見てみる）
 ```
 Usage:  docker [OPTIONS] COMMAND
 
@@ -120,3 +132,42 @@ Run 'docker COMMAND --help' for more information on a command.
 
 For more help on how to use Docker, head to https://docs.docker.com/go/guides/
 ```
+
+# 各種ファイルの中身
+1. `.env`
+    - 環境変数設定ファイル
+    ```
+    EXAMPLE_ENV_VALUE=******
+    ```
+
+2. `Dockerfile`
+    - Dockerコンテナのイメージを構築するためのファイル
+    ```
+    # Pythonのイメージ
+    FROM python:3.12.2
+    USER root
+
+    RUN apt-get update
+    RUN apt-get -y install locales && \
+        localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+
+    # 必要なパッケージをインストールする
+    COPY requirements.txt ./ 
+    RUN apt-get install -y vim less
+    RUN pip install --upgrade pip
+    RUN pip install --no-cache-dir -r requirements.txt
+    ```
+
+3. `docker-compose`
+    - Dockerコンテナを起動するためのファイル
+    ```
+    services:
+    pytho3:
+        env_file: .env
+        restart: always
+        build: .
+        working_dir: '/root/'
+        tty: true
+        volumes:
+        - ./opt:/root/opt
+    ```
